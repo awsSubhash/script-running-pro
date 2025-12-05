@@ -1,11 +1,11 @@
 [
   {
-    "id": "1764919702270",
-    "paused": false,
+    "id": "1764921054089",
+    "paused": true,
     "scriptName": "file.sh",
-    "cron": "*/5 * * * *",
-    "emailTo": "",
-    "emailOnSuccess": false,
-    "emailOnFailure": false
+    "cron": "* * * * *",
+    "emailTo": "subhash.cloud.in@gmail.com",
+    "emailOnSuccess": true,
+    "emailOnFailure": true
   }
 ]

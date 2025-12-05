@@ -1,3 +1,12 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  SCRIPT RUNNER PRO – FULLY UPDATED VERSION (2025)
+//  • Full .env support
+//  • Smart Gmail + Custom SMTP
+//  • All features working perfectly
+// ─────────────────────────────────────────────────────────────────────────────
+
+require('dotenv').config();                      // ← LOAD .env FIRST!
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -13,17 +22,34 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const SCRIPTS_DIR = path.join(__dirname, 'scripts');
 const LOGS_DIR = path.join(__dirname, 'logs');
 const SCHEDULES_FILE = path.join(__dirname, 'schedules.json');
 
+// Create folders
 [SCRIPTS_DIR, LOGS_DIR].forEach(d => !fs.existsSync(d) && fs.mkdirSync(d, { recursive: true }));
 if (!fs.existsSync(SCHEDULES_FILE)) fs.writeFileSync(SCHEDULES_FILE, '[]');
 
 let schedules = JSON.parse(fs.readFileSync(SCHEDULES_FILE, 'utf8') || '[]');
 let cronJobs = {};
 
+// ────────────────────────────── EMAIL CONFIG (SMART) ──────────────────────────────
+const emailConfig = {
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: Number(process.env.EMAIL_PORT) || 587,
+  secure: process.env.EMAIL_SECURE === 'true', // true only for port 465
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+};
+
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  console.warn('⚠️  EMAIL_USER or EMAIL_PASS not set in .env → Email notifications DISABLED');
+}
+
+// ────────────────────────────── RUN SCRIPT FUNCTION ──────────────────────────────
 function runScript(scriptPath, scriptName, socketId = null, emailOptions = null) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const logFile = path.join(LOGS_DIR, `${timestamp}_${scriptName}.log`);
@@ -57,21 +83,22 @@ function runScript(scriptPath, scriptName, socketId = null, emailOptions = null)
     const success = code === 0;
     if (socketId) io.to(socketId).emit('complete', { success, code });
 
-    if (emailOptions?.to && ((success && emailOptions.onSuccess) || (!success && emailOptions.onFailure))) {
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-      });
-      transporter.sendMail({
-        from: 'Script Runner <no-reply@runner.com>',
-        to: emailOptions.to,
-        subject: `${success ? 'SUCCESS' : 'FAILED'} - ${scriptName}`,
-        text: `Exit code: ${code}\n\nSTDOUT:\n${output}\n\nSTDERR:\n${error}`
-      }).catch(err => console.error('Email failed:', err));
+    // SEND EMAIL IF ENABLED AND CONDITIONS MET
+    if (emailOptions?.to && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      if ((success && emailOptions.onSuccess) || (!success && emailOptions.onFailure)) {
+        const transporter = nodemailer.createTransport(emailConfig);
+        transporter.sendMail({
+          from: `"Script Runner" <${process.env.EMAIL_USER}>`,
+          to: emailOptions.to,
+          subject: `${success ? 'SUCCESS' : 'FAILED'} - ${scriptName}`,
+          text: `Exit code: ${code}\n\nSTDOUT:\n${output}\n\nSTDERR:\n${error}`
+        }).catch(err => console.error('Email send failed:', err.message));
+      }
     }
   });
 }
 
+// ────────────────────────────── RELOAD SCHEDULES ──────────────────────────────
 function reloadSchedules() {
   Object.values(cronJobs).forEach(j => j.stop());
   cronJobs = {};
@@ -98,7 +125,7 @@ function reloadSchedules() {
 
 reloadSchedules();
 
-// ====================== ROUTES ======================
+// ────────────────────────────── ROUTES ──────────────────────────────
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -198,7 +225,6 @@ app.post('/api/schedules/:id/resume', (req, res) => {
   res.json({ success: true });
 });
 
-// Bonus: Run Now button
 app.post('/api/schedules/:id/run-now', (req, res) => {
   const sch = schedules.find(s => s.id === req.params.id);
   if (!sch) return res.status(404).json({ success: false });
@@ -218,6 +244,7 @@ app.post('/api/schedules/:id/run-now', (req, res) => {
   }
 });
 
+// ────────────────────────────── SOCKET.IO ──────────────────────────────
 io.on('connection', socket => {
   socket.on('run', data => {
     const { content, name, type } = data;
@@ -227,7 +254,8 @@ io.on('connection', socket => {
   });
 });
 
+// ────────────────────────────── START SERVER ──────────────────────────────
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Script Runner PRO → http://YOUR_SERVER_IP:${PORT}`);
-  console.log(`Access from browser: http://YOUR_SERVER_IP:${PORT}`);
+  console.log(`Email notifications: ${process.env.EMAIL_USER ? 'ENABLED' : 'DISABLED'}`);
 });

@@ -9,6 +9,7 @@
   "dependencies": {
     "cron-parser": "^5.4.0",
     "cron-validator": "^1.4.0",
+    "dotenv": "^17.2.3",
     "express": "^4.22.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.1",
