@@ -1,0 +1,21 @@
+{
+  "name": "script-runner-app",
+  "version": "1.0.0",
+  "description": "Web UI for running and scheduling scripts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cron-parser": "^5.4.0",
+    "cron-validator": "^1.4.0",
+    "express": "^4.22.1",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.10.1",
+    "socket.io": "^4.8.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

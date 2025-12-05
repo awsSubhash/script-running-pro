@@ -1,0 +1,14 @@
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body { background:#f0f2f5; color:#333; }
+header { background:#1877f2; color:white; padding:1rem; text-align:center; }
+nav button { margin:0.5rem; padding:0.7rem 1.2rem; background:#166fe5; border:none; color:white; border-radius:6px; cursor:pointer; }
+main { max-width:1000px; margin:2rem auto; padding:1rem; }
+section { background:white; padding:2rem; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); margin-bottom:2rem; }
+textarea, input, select { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:6px; }
+button { background:#42b883; color:white; padding:0.8rem 1.2rem; border:none; border-radius:6px; cursor:pointer; }
+.actions { display:flex; gap:1rem; margin:1rem 0; }
+#output, #error, #log-view { background:#f8f9fa; padding:1rem; border-radius:6px; margin-top:1rem; white-space:pre-wrap; }
+#error { color:#e74c3c; background:#fdf2f2; }
+ul { list-style:none; margin-top:1rem; }
+li { background:#f8f9fa; padding:1rem; margin:0.5rem 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; }
+#schedule-list li { border-left:5px solid #27ae60; background:#f8fff8; }

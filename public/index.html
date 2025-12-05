@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script Runner Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header><h1>Script Runner Pro</h1></header>
+  <nav>
+    <button onclick="show('run')">Run</button>
+    <button onclick="show('scripts')">Scripts</button>
+    <button onclick="show('schedule')">Schedule</button>
+    <button onclick="show('logs')">Logs</button>
+  </nav>
+  <main>
+    <section id="run">
+      <h2>Run Script</h2>
+      <select id="select-script" onchange="loadScript()"></select>
+      <textarea id="code" placeholder="Paste script..."></textarea>
+      <div class="actions">
+        <select id="type"><option value="sh">Bash (.sh)</option><option value="py">Python (.py)</option></select>
+        <button onclick="runNow()">Run Now</button>
+      </div>
+      <pre id="output"></pre>
+      <pre id="error"></pre>
+    </section>
+
+    <section id="scripts" style="display:none">
+      <h2>Manage Scripts</h2>
+      <input id="new-name" placeholder="hello.sh">
+      <textarea id="new-code"></textarea>
+      <button onclick="saveScript()">Save</button>
+      <ul id="script-list"></ul>
+    </section>
+
+    <section id="schedule" style="display:none">
+      <h2>Scheduled Jobs</h2>
+      <select id="sch-script"></select>
+      <input id="sch-cron" placeholder="* * * * *">
+      <input id="sch-email" placeholder="Email (optional)">
+      <label><input type="checkbox" id="email-success"> Success</label>
+      <label><input type="checkbox" id="email-failure"> Failure</label>
+      <button onclick="addSchedule()">Add Schedule</button>
+      <ul id="schedule-list"></ul>
+    </section>
+
+    <section id="logs" style="display:none">
+      <h2>Logs</h2>
+      <ul id="log-list"></ul>
+      <pre id="log-view"></pre>
+    </section>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
