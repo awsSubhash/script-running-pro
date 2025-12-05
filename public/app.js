@@ -247,7 +247,7 @@ function action(id, act) {
     .then(() => loadSchedulesOnce());
 }
 
-// ====================== LOGS TAB - FIXED 100% ======================
+// ====================== LOGS TAB - FIXED & BEAUTIFUL DATES ======================
 async function loadLogs() {
   try {
     const logs = await fetchJSON('/api/logs');
@@ -261,11 +261,23 @@ async function loadLogs() {
 
     logs.forEach(l => {
       const li = document.createElement('li');
-      const date = new Date(l.timestamp.replace(/-/g, ':').split('.')[0]).toLocaleString();
+
+      // PERFECT DATE PARSING – handles 2025-12-05T10-30-45-123Z format
+      const cleanTs = l.timestamp.replace(/-/g, ':');
+      const dateObj = new Date(cleanTs);
+      const dateStr = isNaN(dateObj.getTime()) 
+        ? 'Just now' 
+        : dateObj.toLocaleDateString(undefined, { 
+            day: 'numeric', month: 'short', year: 'numeric' 
+          }) + ', ' + 
+          dateObj.toLocaleTimeString(undefined, { 
+            hour: '2-digit', minute: '2-digit', second: '2-digit' 
+          });
+
       li.innerHTML = `
         <div>
           <strong>${escapeHtml(l.scriptName)}</strong><br>
-          <small style="color:#7f8c8d">${date}</small>
+          <small style="color:#7f8c8d">${dateStr}</small>
         </div>
         <button onclick="viewLog('${l.file}')">View Log</button>
       `;

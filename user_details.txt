@@ -1,0 +1,28 @@
+User Details Report
+===================
+
+Username : subhash
+UID      : 1001
+Home Dir : /home/subhash
+Shell    : /bin/bash
+-----------------------
+Username : manisha
+UID      : 1002
+Home Dir : /home/manisha
+Shell    : /bin/bash
+-----------------------
+Username : dev
+UID      : 1003
+Home Dir : /home/dev
+Shell    : /bin/bash
+-----------------------
+Username : suraj
+UID      : 1004
+Home Dir : /home/suraj
+Shell    : /bin/bash
+-----------------------
+Username : sagar
+UID      : 1005
+Home Dir : /home/sagar
+Shell    : /bin/bash
+-----------------------
