@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": "1764919702270",
+    "paused": false,
+    "scriptName": "file.sh",
+    "cron": "*/5 * * * *",
+    "emailTo": "",
+    "emailOnSuccess": false,
+    "emailOnFailure": false
+  }
+]
